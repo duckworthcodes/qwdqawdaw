@@ -1,3 +1,65 @@
+// Facebook SDK setup
+(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+window.fbAsyncInit = function() {
+    FB.init({
+        appId      : '1000055404907481', // Your Facebook App ID
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v12.0' // Your API version
+    });
+
+    FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+    });
+};
+
+function statusChangeCallback(response) {
+    // Hide the loading spinner
+    document.getElementById('loading').style.display = 'none';
+    
+    if (response.status === 'connected') {
+        // User logged in, fetch their profile
+        fetchUserProfile(response.authResponse.accessToken);
+    } else {
+        // User not logged in, hide profile info
+        document.getElementById('profileInfo').style.display = 'none';
+    }
+}
+
+function checkLoginState() {
+    // Show the loading spinner
+    document.getElementById('loading').style.display = 'block';
+    
+    // Check the Facebook login status
+    FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+    });
+}
+
+function fetchUserProfile(accessToken) {
+    FB.api('/me', {fields: 'name,picture'}, function(response) {
+        document.getElementById('profileName').textContent = 'Hello, ' + response.name;
+        document.getElementById('profilePicture').src = response.picture.data.url;
+        document.getElementById('profileInfo').style.display = 'block';
+        document.querySelector('.fb-login-button').style.display = 'none';
+    });
+}
+
+function logout() {
+    FB.logout(function(response) {
+        document.getElementById('profileInfo').style.display = 'none';
+        document.querySelector('.fb-login-button').style.display = 'block';
+    });
+}
+
+// Video player setup
 const video = document.getElementById('video');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const prevBtn = document.getElementById('prevBtn');
@@ -15,7 +77,7 @@ const likesCount = document.getElementById('likesCount');
 const commentsCount = document.getElementById('commentsCount');
 
 const videos = [
-{ title: 'Going Bad(Drake)', videoId: 'S1gp0m4B5p8', src:'https://d21v3ezekkpxhy.cloudfront.net/Going+Bad.mp4', thumbnail: 'https://m.media-amazon.com/images/M/MV5BYmU2Y2U1M2UtYjM0Yi00NGRlLWIxYzktNWU2NDU1MWIyM2NkXkEyXkFqcGdeQXVyODEwMzM4MTM@._V1_.jpg' },
+    { title: 'Going Bad(Drake)', videoId: 'S1gp0m4B5p8', src:'https://d21v3ezekkpxhy.cloudfront.net/Going+Bad.mp4', thumbnail: 'https://m.media-amazon.com/images/M/MV5BYmU2Y2U1M2UtYjM0Yi00NGRlLWIxYzktNWU2NDU1MWIyM2NkXkEyXkFqcGdeQXVyODEwMzM4MTM@._V1_.jpg' },
 { title: 'J Cole - The Last Call', videoId: 'Jt5HyIiYIzM',src:'https://d21v3ezekkpxhy.cloudfront.net/The+Warm+Up+J+Cole+Last+Call.mp4', thumbnail: 'https://upload.wikimedia.org/wikipedia/en/2/2e/J-cole-the-warm-up.jpg' },
 { title: 'Zeze(Travis Scott)', videoId: 'EfHNIPXTxy0',src:'https://d21v3ezekkpxhy.cloudfront.net/ZEZE.mp4', thumbnail: 'https://townsquare.media/site/812/files/2018/10/Kodak-Black-ZeZe-Feature.jpg?w=780&q=75' },
 { title: 'Bound (Kanye+Tyler)', videoId: 'epF_-PmEUoc',src:'https://d21v3ezekkpxhy.cloudfront.net/Bound.mp4', thumbnail: 'https://upload.wikimedia.org/wikipedia/en/5/51/Igor_-_Tyler%2C_the_Creator.jpg' },
@@ -45,6 +107,7 @@ const videos = [
 { title: 'Still Dre(Snoop Dogg)',videoId:'U1yQMjFZ6j4', src: 'https://d21v3ezekkpxhy.cloudfront.net/Still+Dre+Dr+Dre+Snoop+Dogg.mp4', thumbnail: 'https://i.scdn.co/image/ab67616d0000b2739b19c107109de740bad72df5' },
 { title: 'Sweet/I Thought You Wanted To Dance',videoId:'2ZQI6xkB74w', src: 'https://d21v3ezekkpxhy.cloudfront.net/Sweet.mp4', thumbnail: 'https://upload.wikimedia.org/wikipedia/en/d/d3/Call_Me_If_You_Get_Lost_album_cover.jpg' },
 { title: 'The Watcher(Dr. Dre)',videoId:'dhXnmUr1Zbg', src: 'https://d21v3ezekkpxhy.cloudfront.net/The+Watcher+Dr+Dre.mp4', thumbnail: 'https://i.scdn.co/image/ab67616d0000b2739b19c107109de740bad72df5' },
+
 ];
 
 let currentVideoIndex = 0;
