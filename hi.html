@@ -3,183 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="raaa.css">
-    <title>Login For StreamIt</title>
-    <!-- Firebase App (the core Firebase SDK) -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <!-- Firebase Authentication SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <title>Video Player</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- FontAwesome for icons -->
 </head>
 <body>
-    <div class="wrapper">
-        <nav class="nav">
-            <div class="nav-logo">
-                <p>StreamIt.</p>
-            </div>
-            <div class="nav-menu" id="navMenu">
-                <ul>
-                    <li><a href="hi.html" class="link active">Home</a></li>
-                    <li><a href="index.html" class="link">Explore Site</a></li>
-                </ul>
-            </div>
-            <div class="nav-button">
-                <button class="btn white-btn" id="loginBtn" onclick="toggleForm('login')">Sign In</button>
-                <button class="btn" id="registerBtn" onclick="toggleForm('register')">Sign Up</button>
-            </div>
-            <div class="nav-menu-btn">
-                <i class="bx bx-menu" onclick="myMenuFunction()"></i>
-            </div>
-        </nav>
 
-        <div class="form-box">
-            <div class="login-container" id="login">
-                <div class="top">
-                    <span>Don't have an account? <a href="#" onclick="toggleForm('register')">Sign Up</a></span>
-                    <header>Login</header>
-                </div>
-                <form id="login-form">
-                    <div class="input-box">
-                        <input type="text" class="input-field" placeholder="Username or Email" id="login-username">
-                        <i class="bx bx-user"></i>
-                    </div>
-                    <div class="input-box">
-                        <input type="password" class="input-field" placeholder="Password" id="login-password">
-                        <i class="bx bx-lock-alt"></i>
-                    </div>
-                    <div class="input-box">
-                        <input type="submit" class="submit" value="Sign In">
-                    </div>
-                    <div class="two-col">
-                        <div class="one">
-                            <input type="checkbox" id="login-check">
-                            <label for="login-check"> Remember Me</label>
-                        </div>
-                        <div class="two">
-                            <label><a href="#">Forgot password?</a></label>
-                        </div>
-                    </div>
-                </form>
-            </div>
+    <!-- Facebook Login -->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+    <div id="loading" style="display: none;">Loading...</div>
+    <div id="profileInfo" style="display: none;">
+        <img id="profilePicture" alt="Profile Picture" style="width: 50px; height: 50px; border-radius: 50%;">
+        <span id="profileName"></span>
+        <button onclick="logout()">Logout</button>
+    </div>
+    <div class="fb-login-button" data-scope="public_profile,email" data-callback="checkLoginState"></div>
 
-            <div class="register-container" id="register">
-                <div class="top">
-                    <span>Have an account? <a href="#" onclick="toggleForm('login')">Login</a></span>
-                    <header>Sign Up</header>
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Video Player -->
+        <div class="main-content">
+            <div class="video-container">
+                <video id="video" class="video" controls>
+                    <source id="videoSource" src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="controls">
+                    <button id="prevBtn"><i class="fas fa-backward"></i></button>
+                    <button id="playPauseBtn"><i class="fas fa-play"></i></button>
+                    <button id="nextBtn"><i class="fas fa-forward"></i></button>
+                    <input id="seekBar" type="range" min="0" max="100" value="0">
+                    <button id="muteBtn"><i class="fas fa-volume-up"></i></button>
+                    <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
                 </div>
-                <form id="register-form">
-                    <div class="two-forms">
-                        <div class="input-box">
-                            <input type="text" class="input-field" placeholder="Firstname" id="register-firstname">
-                            <i class="bx bx-user"></i>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="input-field" placeholder="Lastname" id="register-lastname">
-                            <i class="bx bx-user"></i>
-                        </div>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" class="input-field" placeholder="Email" id="register-email">
-                        <i class="bx bx-envelope"></i>
-                    </div>
-                    <div class="input-box">
-                        <input type="password" class="input-field" placeholder="Password" id="register-password">
-                        <i class="bx bx-lock-alt"></i>
-                    </div>
-                    <div class="input-box">
-                        <input type="submit" class="submit" value="Register">
-                    </div>
-                    <div class="two-col">
-                        <div class="one">
-                            <input type="checkbox" id="register-check">
-                            <label for="register-check"> Remember Me</label>
-                        </div>
-                        <div class="two">
-                            <label><a href="#">Terms & conditions</a></label>
-                        </div>
-                    </div>
-                </form>
             </div>
+        </div>
+
+        <!-- Video Playlist -->
+        <div class="playlist">
+            <h2>Video Playlist</h2>
+            <ul id="videoList"></ul>
+        </div>
+
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats">
+        <div>
+            <span id="viewsCount">0</span>
+            <span>Views</span>
+        </div>
+        <div>
+            <span id="likesCount">0</span>
+            <span>Likes</span>
+        </div>
+        <div>
+            <span id="commentsCount">0</span>
+            <span>Comments</span>
         </div>
     </div>
 
-    <script>
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCkQ5NxiNFU6kj_62CuUglbf03u08OqEL8",
-            authDomain: "login-for-stream-it.firebaseapp.com",
-            projectId: "login-for-stream-it",
-            storageBucket: "login-for-stream-it.appspot.com",
-            messagingSenderId: "493040831528",
-            appId: "1:493040831528:web:b17e7734ffa1a1f294b91d",
-            measurementId: "G-XWREXQ88JX"
-        };
-    
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-    
-        const auth = firebase.auth();
-    
-        function myMenuFunction() {
-            var i = document.getElementById("navMenu");
-            if(i.className === "nav-menu") {
-                i.className += " responsive";
-            } else {
-                i.className = "nav-menu";
-            }
-        }
-    
-        function toggleForm(formType) {
-            var loginForm = document.getElementById('login');
-            var registerForm = document.getElementById('register');
-            var loginBtn = document.getElementById('loginBtn');
-            var registerBtn = document.getElementById('registerBtn');
-    
-            if (formType === 'login') {
-                loginForm.style.left = "4px";
-                registerForm.style.right = "-520px";
-                loginBtn.classList.add("white-btn");
-                registerBtn.classList.remove("white-btn");
-                loginForm.style.opacity = 1;
-                registerForm.style.opacity = 0;
-            } else {
-                loginForm.style.left = "-510px";
-                registerForm.style.right = "5px";
-                loginBtn.classList.remove("white-btn");
-                registerBtn.classList.add("white-btn");
-                loginForm.style.opacity = 0;
-                registerForm.style.opacity = 1;
-            }
-        }
-    
-        document.getElementById('login-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const email = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-    
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                alert('Login successful!');
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        });
-    
-        document.getElementById('register-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const firstname = document.getElementById('register-firstname').value;
-            const lastname = document.getElementById('register-lastname').value;
-    
-            try {
-                await auth.createUserWithEmailAndPassword(email, password);
-                alert('Registration successful!');
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        });
-    
-    </script>
+    <!-- Search Section -->
+    <div class="search-bar">
+        <input id="searchInput" type="text" placeholder="Search Videos...">
+        <button id="searchButton"><i class="fas fa-search"></i></button>
+    </div>
+
+    <script src="scripts.js"></script> <!-- Link to your JS file -->
 </body>
 </html>
