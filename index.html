@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamIt - Elegant Video Player</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="bad.css" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">StreamIt</div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button id="searchButton"><i class="fas fa-search"></i></button>
+        </div>
+        <!-- Facebook Login Button -->
+        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+        </fb:login-button>
+        <div id="profileInfo" style="display: none;">
+            <p id="profileName"></p>
+            <img id="profilePicture" src="" alt="Profile Picture">
+            <button onclick="logout()">Log out</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="main-content">
+            <div class="video-container">
+                <video id="video" class="video" controls>
+                    <source src="" type="video/mp4" id="videoSource">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="controls">
+                    <button id="prevBtn"><i class="fas fa-step-backward"></i></button>
+                    <button id="playPauseBtn"><i class="fas fa-play"></i></button>
+                    <button id="nextBtn"><i class="fas fa-step-forward"></i></button>
+                    <input type="range" id="seekBar" value="0">
+                    <button id="muteBtn"><i class="fas fa-volume-up"></i></button>
+                    <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                </div>
+            </div>
+            <div class="stats">
+                <div>
+                    <span id="viewsCount">0</span>
+                    Views
+                </div>
+                <div>
+                    <span id="likesCount">0</span>
+                    Likes
+                </div>
+                <div>
+                    <span id="commentsCount">0</span>
+                    Comments
+                </div>
+            </div>
+        </div>
+        <div class="playlist">
+            <h2>Playlist</h2>
+            <ul id="videoList"></ul>
+        </div>
+    </div>
+    <script src="pov.js"></script>
+    <script>
+        // Load the SDK asynchronously
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '1000055404907481', // Your Facebook App ID
+                cookie     : true,
+                xfbml      : true,
+                version    : 'v12.0' // Your API version
+            });
+            
+            FB.AppEvents.logPageView();   
+
+            FB.getLoginStatus(function(response) {
+                statusChangeCallback(response);
+            });   
+        };
+
+        function statusChangeCallback(response) {
+            if (response.status === 'connected') {
+                // User logged into your app and Facebook.
+                fetchUserProfile(response.authResponse.accessToken);
+            } else {
+                // User not logged into your app or not authorized.
+                document.getElementById('profileInfo').style.display = 'none';
+            }
+        }
+
+        function checkLoginState() {
+            FB.getLoginStatus(function(response) {
+                statusChangeCallback(response);
+            });
+        }
+
+        function fetchUserProfile(accessToken) {
+            FB.api('/me', {fields: 'name,picture'}, function(response) {
+                document.getElementById('profileName').textContent = 'Hello, ' + response.name;
+                document.getElementById('profilePicture').src = response.picture.data.url;
+                document.getElementById('profileInfo').style.display = 'block';
+                document.querySelector('.fb-login-button').style.display = 'none';
+            });
+        }
+
+        function logout() {
+            FB.logout(function(response) {
+                document.getElementById('profileInfo').style.display = 'none';
+                document.querySelector('.fb-login-button').style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html>

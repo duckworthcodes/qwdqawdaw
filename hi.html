@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="raaa.css">
+    <title>Login For StreamIt</title>
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <!-- Firebase Authentication SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="nav">
+            <div class="nav-logo">
+                <p>StreamIt.</p>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <ul>
+                    <li><a href="hi.html" class="link active">Home</a></li>
+                    <li><a href="index.html" class="link">Explore Site</a></li>
+                </ul>
+            </div>
+            <div class="nav-button">
+                <button class="btn white-btn" id="loginBtn" onclick="toggleForm('login')">Sign In</button>
+                <button class="btn" id="registerBtn" onclick="toggleForm('register')">Sign Up</button>
+            </div>
+            <div class="nav-menu-btn">
+                <i class="bx bx-menu" onclick="myMenuFunction()"></i>
+            </div>
+        </nav>
+
+        <div class="form-box">
+            <div class="login-container" id="login">
+                <div class="top">
+                    <span>Don't have an account? <a href="#" onclick="toggleForm('register')">Sign Up</a></span>
+                    <header>Login</header>
+                </div>
+                <form id="login-form">
+                    <div class="input-box">
+                        <input type="text" class="input-field" placeholder="Username or Email" id="login-username">
+                        <i class="bx bx-user"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" class="input-field" placeholder="Password" id="login-password">
+                        <i class="bx bx-lock-alt"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="submit" class="submit" value="Sign In">
+                    </div>
+                    <div class="two-col">
+                        <div class="one">
+                            <input type="checkbox" id="login-check">
+                            <label for="login-check"> Remember Me</label>
+                        </div>
+                        <div class="two">
+                            <label><a href="#">Forgot password?</a></label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="register-container" id="register">
+                <div class="top">
+                    <span>Have an account? <a href="#" onclick="toggleForm('login')">Login</a></span>
+                    <header>Sign Up</header>
+                </div>
+                <form id="register-form">
+                    <div class="two-forms">
+                        <div class="input-box">
+                            <input type="text" class="input-field" placeholder="Firstname" id="register-firstname">
+                            <i class="bx bx-user"></i>
+                        </div>
+                        <div class="input-box">
+                            <input type="text" class="input-field" placeholder="Lastname" id="register-lastname">
+                            <i class="bx bx-user"></i>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="input-field" placeholder="Email" id="register-email">
+                        <i class="bx bx-envelope"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" class="input-field" placeholder="Password" id="register-password">
+                        <i class="bx bx-lock-alt"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="submit" class="submit" value="Register">
+                    </div>
+                    <div class="two-col">
+                        <div class="one">
+                            <input type="checkbox" id="register-check">
+                            <label for="register-check"> Remember Me</label>
+                        </div>
+                        <div class="two">
+                            <label><a href="#">Terms & conditions</a></label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkQ5NxiNFU6kj_62CuUglbf03u08OqEL8",
+            authDomain: "login-for-stream-it.firebaseapp.com",
+            projectId: "login-for-stream-it",
+            storageBucket: "login-for-stream-it.appspot.com",
+            messagingSenderId: "493040831528",
+            appId: "1:493040831528:web:b17e7734ffa1a1f294b91d",
+            measurementId: "G-XWREXQ88JX"
+        };
+    
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    
+        const auth = firebase.auth();
+    
+        function myMenuFunction() {
+            var i = document.getElementById("navMenu");
+            if(i.className === "nav-menu") {
+                i.className += " responsive";
+            } else {
+                i.className = "nav-menu";
+            }
+        }
+    
+        function toggleForm(formType) {
+            var loginForm = document.getElementById('login');
+            var registerForm = document.getElementById('register');
+            var loginBtn = document.getElementById('loginBtn');
+            var registerBtn = document.getElementById('registerBtn');
+    
+            if (formType === 'login') {
+                loginForm.style.left = "4px";
+                registerForm.style.right = "-520px";
+                loginBtn.classList.add("white-btn");
+                registerBtn.classList.remove("white-btn");
+                loginForm.style.opacity = 1;
+                registerForm.style.opacity = 0;
+            } else {
+                loginForm.style.left = "-510px";
+                registerForm.style.right = "5px";
+                loginBtn.classList.remove("white-btn");
+                registerBtn.classList.add("white-btn");
+                loginForm.style.opacity = 0;
+                registerForm.style.opacity = 1;
+            }
+        }
+    
+        document.getElementById('login-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+    
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                alert('Login successful!');
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    
+        document.getElementById('register-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const firstname = document.getElementById('register-firstname').value;
+            const lastname = document.getElementById('register-lastname').value;
+    
+            try {
+                await auth.createUserWithEmailAndPassword(email, password);
+                alert('Registration successful!');
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    
+    </script>
+</body>
+</html>
