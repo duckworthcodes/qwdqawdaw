@@ -1,3 +1,4 @@
+/* General Styles */
 :root {
     --primary-color: #3498db;
     --secondary-color: #2c3e50;
@@ -17,6 +18,7 @@ body {
     color: var(--text-color);
 }
 
+/* Header Styles */
 .header {
     display: flex;
     align-items: center;
@@ -58,6 +60,29 @@ body {
     margin-left: 0.5rem;
 }
 
+/* Facebook Login Button Styles */
+.fb-login-button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.fb-login-button i {
+    margin-right: 10px;
+}
+
+.fb-login-button:hover {
+    background-color: #2980b9; /* Darker shade of primary color */
+}
+
+/* Container Styles */
 .container {
     display: flex;
     padding: 2rem;
@@ -102,6 +127,7 @@ body {
     margin: 0 1rem;
 }
 
+/* Playlist Styles */
 .playlist {
     flex: 1;
     background-color: var(--secondary-color);
@@ -149,6 +175,7 @@ body {
     margin-right: 1rem;
 }
 
+/* Stats Styles */
 .stats {
     display: flex;
     justify-content: space-around;
@@ -168,6 +195,7 @@ body {
     color: var(--primary-color);
 }
 
+/* Media Queries */
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
